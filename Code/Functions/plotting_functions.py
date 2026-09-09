@@ -1996,7 +1996,7 @@ def plot_phase_plane_Vw(I_syn_mean_CTR, I_syn_mean_FR, g_L_CTR, g_L_FR, E_L_CTR,
             distance_labels.append(f'distance FR = {dist_FR:.3f} nA')
 
     # mark threshold
-    ax.axvline(V_thresh, color='k', linestyle=':', linewidth=1)
+    ax.axvline(V_thresh, color='k', linestyle='--', linewidth=1)
     ax.set_xlim(V_min, V_max)
     y_min, y_max = ax.get_ylim()
     ax.set_ylim(y_min, y_max)

@@ -11,11 +11,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gs
 from PIL import Image
-import plotly.graph_objs as go
 import plotly.io as pio
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import MaxNLocator
-from matplotlib.ticker import LogLocator
 from matplotlib.ticker import FormatStrFormatter
     
 from matplotlib.lines import Line2D
@@ -1380,12 +1378,12 @@ def fig_multiple_trajectories_examples(results_mean_spiking_trials, all_trajecto
     V_m_FR_like = data_FR_like['V_m']
 
     # shift V_m so resting level is at 0 mV
-    V_m_shifted_CTR_like, _ = pf.shift_V_m(V_m_CTR_like, target_mV=0.0)
-    V_m_shifted_FR_like, _ = pf.shift_V_m(V_m_FR_like, target_mV=0.0)
+    V_m_shifted_CTR_like, shift_CTR_like = pf.shift_V_m(V_m_CTR_like, target_mV=0.0)
+    V_m_shifted_FR_like, shift_FR_like = pf.shift_V_m(V_m_FR_like, target_mV=0.0)
 
     # cut excerpts
-    V_m_excerpts_CTR_like, V_m_min_CTR_like, V_m_max_CTR_like, _ = pf.cut_into_excerpts(V_m_shifted_CTR_like, n_excerpts=9, start_idx=3000, stop_idx=30000)
-    V_m_excerpts_FR_like, V_m_min_FR_like, V_m_max_FR_like, _ = pf.cut_into_excerpts(V_m_shifted_FR_like, n_excerpts=9, start_idx=3000, stop_idx=30000)
+    V_m_excerpts_CTR_like, V_m_min_CTR_like, V_m_max_CTR_like, _ = pf.cut_into_excerpts(V_m_shifted_CTR_like, n_excerpts=9, start_idx=120000, stop_idx=140000) #start_idx=3000, stop_idx=30000
+    V_m_excerpts_FR_like, V_m_min_FR_like, V_m_max_FR_like, _ = pf.cut_into_excerpts(V_m_shifted_FR_like, n_excerpts=9, start_idx=120000, stop_idx=140000)
 
     # shared y-limits
     V_m_min, V_m_max = pf.compute_shared_ylim(V_m_min_CTR_like, V_m_max_CTR_like, V_m_min_FR_like, V_m_max_FR_like)
@@ -1416,6 +1414,9 @@ def fig_multiple_trajectories_examples(results_mean_spiking_trials, all_trajecto
     # B: combined excerpts
     axB = fig.add_subplot(G[1, 0])
     pf.plot_two_V_m_excerpts(V_m_excerpts_1=V_m_excerpts_CTR_like, V_m_excerpts_2=V_m_excerpts_FR_like, color_1=color_CTR_like, color_2=color_FR_like, ylims=(V_m_min, V_m_max), ax=axB)
+    # shifted spiking thresholds
+    V_thresh_shifted = data_FR_like['V_thresh'] + shift_FR_like
+    axB.axhline(V_thresh_shifted+4, 0.1, 1.2, color=color_CTR, ls='--', alpha=0.9, clip_on=False)
     panel_letter(axB, "B", size=fontsizes['panelletterfontsize'])
 
     # add colored parameter text below panel B
@@ -1445,8 +1446,8 @@ def fig_multiple_trajectories_examples(results_mean_spiking_trials, all_trajecto
     # C: histogram
     xmin = -45
     xmax = -80
+    
     V_thresh = data_CTR_like['V_thresh']
-
     axC = fig.add_subplot(G[1, 1])
     axC.hist(V_m_FR_like, bins=np.linspace(xmax, xmin, 80), color=color_FR_like, alpha=0.8, density=True)
     axC.hist(V_m_CTR_like, bins=np.linspace(xmax, xmin, 80), color=color_CTR_like, alpha=0.8, density=True)
@@ -1490,41 +1491,38 @@ def fig_food_restriction_Zeldenrust(results_analysis_exc, results_analysis_inh, 
     fig = plt.figure(figsize=(figsize[0], figsize[1]), dpi=600)
     G = gs.GridSpec(1, 6, figure=fig, width_ratios=[1, 1, 1, 1, 1, 1], height_ratios=[1.0], wspace=1.0, hspace=0.25)
     
-    # F
     row3 = G[0, :].subgridspec(1, 2, wspace=0.5) # extra width space
     
-    # G
     axA= fig.add_subplot(row3[0, 0])#fig.add_subplot(G[2, 1:3])
     x_name = 'R_m_mean_MOhm_list'
     y_name = 'E_L_mV_list' 
     
     pf.plot_correlation_exc_inh(results_analysis_exc[x_name], results_analysis_inh[x_name], results_analysis_exc[y_name], results_analysis_inh[y_name], x_name, y_name, colors=[color_exc, color_inh], ax=axA)
     pf.add_banana_strip(axA, x0=220, x1=350, y_top=-58, y_bottom=-70, power=3.8, lw=30, color=color_FR, alpha=0.4, zorder=10)
-    if axA.get_legend() is not None:
-        axA.get_legend().remove()
-    
+    #if axA.get_legend() is not None:
+    #    axA.get_legend().remove()
+    axA.legend(loc='upper right', bbox_to_anchor=(1.2, 1.05), facecolor='white', edgecolor='none', framealpha=1.0, fontsize='small')
     panel_letter(axA, "A", size=fontsizes['panelletterfontsize'])
     
-    # H: MI & E_tot FR
+    # B: MI & E_tot FR
     hcell = row3[0, 1].subgridspec(2, 1, hspace=0.25, height_ratios=[1, 1])
 
-    axB1 = fig.add_subplot(hcell[0, 0])  # MI
-    axB2 = fig.add_subplot(hcell[1, 0])  # E_tot
+    axB1 = fig.add_subplot(hcell[0, 0])  # E_tot 
+    axB2 = fig.add_subplot(hcell[1, 0])  # MI
 
-    pf.plot_gradient_line(axB1, proportion_of_synaptic_change, MI_list, lw=4, alpha_left=0.3, alpha_right=1.0, color=color_FR, zorder=5)
-    axB1.set_ylabel('$MI$ (bits)')
+    pf.plot_gradient_line(axB1, proportion_of_synaptic_change, np.asarray(E_tot_list) / 1e9, lw=4, alpha_left=0.3, alpha_right=1.0, color=color_FR, zorder=5)
     axB1.set_xlabel("")
+    axB1.set_ylabel('$E_{\mathrm{tot}}$ ($10^9$ATP/s)')
     axB1.tick_params(axis="x", labelbottom=False)
     axB1.spines['top'].set_visible(False)
     axB1.spines['right'].set_visible(False)
-
-    pf.plot_gradient_line(axB2, proportion_of_synaptic_change, np.asarray(E_tot_list) / 1e9, lw=4, alpha_left=0.3, alpha_right=1.0, color=color_FR, zorder=5)
-    axB2.set_xlabel('Prop. of FR syn. weight change')
-    axB2.set_ylabel('$E_{\mathrm{tot}}$ ($10^9$ATP/s)')
+    
+    pf.plot_gradient_line(axB2, proportion_of_synaptic_change, MI_list, lw=4, alpha_left=0.3, alpha_right=1.0, color=color_FR, zorder=5)
+    axB2.set_ylabel('$MI$ (bits)')
+    axB2.set_xlabel('Proportion of FR synaptic weight change')
     axB2.spines['top'].set_visible(False)
     axB2.spines['right'].set_visible(False)
 
-    # Panel letter für G (oben links im oberen Subplot)
     panel_letter(axB1, "B", size=fontsizes['panelletterfontsize'])
     
     #plt.tight_layout()
@@ -2259,7 +2257,8 @@ def fig_energy_budget_minmax_bars(E_CTR, E_FR, E_CTR_minmax, E_FR_minmax, r_post
     FR_positions = [0.30, 0.40, 0.50]
 
     for panel_idx, (ax, r_post) in enumerate(zip(axes, r_post_values)):
-
+        
+        #panel_bar_totals = []
         # loop over CTR and FR
         for positions, main_set, minmax_set in zip([CTR_positions, FR_positions], [E_CTR, E_FR], [E_CTR_minmax, E_FR_minmax]):
 
@@ -2267,6 +2266,8 @@ def fig_energy_budget_minmax_bars(E_CTR, E_FR, E_CTR_minmax, E_FR_minmax, r_post
             values_min = [np.interp(r_post, r_post_fit, minmax_set[idx][0]) / 1e9 for idx in component_indices]
             values_main = [np.interp(r_post, r_post_fit, main_set[idx]) / 1e9 for idx in component_indices]
             values_max = [np.interp(r_post, r_post_fit, minmax_set[idx][1]) / 1e9 for idx in component_indices]
+            
+            #panel_bar_totals.extend([sum(values_min), sum(values_main), sum(values_max)]) # save total heights for label placement
 
             # minimum stacked bar
             bottom = 0
@@ -2297,14 +2298,20 @@ def fig_energy_budget_minmax_bars(E_CTR, E_FR, E_CTR_minmax, E_FR_minmax, r_post
         ax.get_xticklabels()[1].set_color('red')
         ax.tick_params(axis='x', pad=15)
 
+        # firing-rate label centered above all 6 bars
+        #x_center = np.mean(CTR_positions + FR_positions)   # = 0.20
+        #y_text = max(panel_bar_totals) + 0.04 * y_limit
+        #ax.text(x_center, y_text, f'{r_post:g} Hz', ha='center', va='bottom', fontsize=fontsizes['panelletterfontsize']*0.95)
+
         # panel formatting
         ax.set_xlim(-0.18, 0.58)
         ax.set_ylim(0, y_limit)
-        ax.set_title(f'{r_post:g} Hz', fontsize=fontsizes['panelletterfontsize']*0.8)
+        #ax.set_title(f'{r_post:g} Hz', fontsize=fontsizes['panelletterfontsize']*0.8)
+        ax.text(np.mean(CTR_positions + FR_positions), -0.18, f'{r_post:g} Hz', transform=ax.get_xaxis_transform(), ha='center', va='top', fontsize=fontsizes['panelletterfontsize']*0.8)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=4, min_n_ticks=3))
-        ax.text(-0.14, 1.02, chr(65 + panel_idx), transform=ax.transAxes, fontsize=fontsizes['panelletterfontsize'], fontweight='bold', ha='left', va='bottom')
+        #ax.text(-0.14, 1.02, chr(65 + panel_idx), transform=ax.transAxes, fontsize=fontsizes['panelletterfontsize'], fontweight='bold', ha='left', va='bottom')
 
     # only show y-axis on first panel
     axes[0].set_ylabel('Energy consumption / ($10^9$ ATP/s)')
@@ -2314,7 +2321,7 @@ def fig_energy_budget_minmax_bars(E_CTR, E_FR, E_CTR_minmax, E_FR_minmax, r_post
 
     # component legend in upper-left empty region of panel A
     component_handles = [Patch(facecolor=color, edgecolor='none', label=label) for color, label in zip(component_colors, component_labels)]
-    fig.legend(handles=component_handles, loc='upper left', bbox_to_anchor=(0.14, 0.86), ncol=3, frameon=False, handlelength=1.6, handletextpad=0.5, columnspacing=1.2, labelspacing=0.4)
+    fig.legend(handles=component_handles, loc='upper left', bbox_to_anchor=(0.14, 0.9), ncol=3, frameon=False, handlelength=1.6, handletextpad=0.5, columnspacing=1.2, labelspacing=0.4) # bbox_to_anchor=(0.14, 0.86)
     
     plt.tight_layout()
 
