@@ -48,7 +48,7 @@ def set_paper_style():
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica", "DejaVu Sans", "Arial"], # "CMU Serif"
     })
-    # costum letter sizes
+    # custom letter sizes
     panelletterfontsize=15
     
     return panelletterfontsize
@@ -77,7 +77,7 @@ def OLD_set_paper_style():
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica", "DejaVu Sans", "Arial"], # "CMU Serif"
     })
-    # costum letter sizes
+    # custom letter sizes
     panelletterfontsize=15
     
     return panelletterfontsize
@@ -107,7 +107,7 @@ def set_thesis_style():
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica", "DejaVu Sans", "Arial"], # "CMU Serif"
     })
-    # costum letter sizes
+    # custom letter sizes
     panelletterfontsize=15
     
     return panelletterfontsize
@@ -340,7 +340,7 @@ def fig_synaptic_input_Padamsey(w_e_0, r_e, N_e_noise, spike_times_e, spike_time
     axB_w = fig.add_subplot(gsB[0, 0])
     axB_r = fig.add_subplot(gsB[1, 0])
 
-    # get signalling parts
+    # get signaling parts
     w_e_signal = w_e[N_e_noise:]
     r_e_signal = r_e[N_e_noise:]
     
@@ -528,7 +528,7 @@ def fig_synaptic_input_Zeldenrust(t_stim, w_e_0, r_e, spike_times_e, spike_times
     axA_w = fig.add_subplot(gs[0, 0])
     axA_r = fig.add_subplot(gs[1, 0])
 
-    # get signalling parts
+    # get signaling parts
     w_e_signal = w_e[N_e_noise:]
     r_e_signal = r_e[N_e_noise:]
 
@@ -538,7 +538,7 @@ def fig_synaptic_input_Zeldenrust(t_stim, w_e_0, r_e, spike_times_e, spike_times
     axA_r.get_legend().remove() if axA_r.get_legend() is not None else None
     panel_letter(axA_w, "A", size=fontsizes['panelletterfontsize'], dx=-0.015, dy=+0.08)
     
-    # B: excitatory synaptic weights & firing rates matching logic for different stimul
+    # B: excitatory synaptic weights & firing rates matching logic for different stimuli
     axB_OFF  = fig.add_subplot(gs[0, 1])
     axB_ON = fig.add_subplot(gs[1, 1])
 
@@ -547,8 +547,8 @@ def fig_synaptic_input_Zeldenrust(t_stim, w_e_0, r_e, spike_times_e, spike_times
     
     r_e_signal_OFF = r_e_signal[:, idx_t_OFF]  
     r_e_signal_ON = r_e_signal[:, idx_t_ON] 
-    pf.plot_synapse_weights_and_rates(w_e_signal, r_e_signal_OFF, description='Synaptic input OFF-stimulus', colors=[color_w_e, color_r_e], ax=axB_ON)
-    pf.plot_synapse_weights_and_rates(w_e_signal, r_e_signal_ON, description='Synaptic input ON-stimulus', colors=[color_w_e, color_r_e], ax=axB_OFF)
+    pf.plot_synapse_weights_and_rates(w_e_signal, r_e_signal_OFF, description='Synaptic input OFF-stimulus', colors=[color_w_e, color_r_e], ax=axB_OFF)
+    pf.plot_synapse_weights_and_rates(w_e_signal, r_e_signal_ON, description='Synaptic input ON-stimulus', colors=[color_w_e, color_r_e], ax=axB_ON)
     panel_letter(axB_OFF, "B", size=fontsizes['panelletterfontsize'], dx=0.03, dy=+0.08)
 
     axC = fig.add_subplot(gs[2, :])
@@ -687,7 +687,7 @@ def fig_energy_budget_comparison(colors=['#57e7ff', '#9357ff', '#ff1d1d'], fonts
           
 
 # Fig. adaptation cost
-def fig_adaptation_currents(r_post_list, w_ad_list, ratio_list, labels_list, AP_adaptation, ionic_currents_adaptation, colors=['blue', 'orange', '#57e7ff', '#9357ff', '#ff1d1d'], fontsizes={'panelletterfontsize': 15}, figsize=(7,6), savename_mode=True): 
+def fig_adaptation_currents(r_post_list, w_ad_list, ratio_list, labels_list, AP_adaptation, ionic_currents_adaptation, colors=['blue', 'orange', '#57e7ff', '#9357ff', '#ff1d1d', '#2A9DF4'], fontsizes={'panelletterfontsize': 15}, figsize=(7,6), savename_mode=True): 
     # create adaptation currents figure
     # input
     # r_post_list is a list of firing rates in Hz
@@ -879,7 +879,7 @@ def fig_energy_budget(E_CTR, E_FR, r_post_fit, E_tot_minmax, colors=['black', 'r
     for j in range(2):
         axes[1, j].axis('off')"""
     
-    legend_labels = ['House keeping', 'Resting potential\n(reversal of Na\u207A)', 'Action potential\n(reversal of Na\u207A)', 'Synaptic transmission\n(glutamate recycling)', 'Synaptic transmission\n(reversal of presyn Ca\u00B2\u207A)', 'Synaptic transmission\n(reversal of Na\u207A)']
+    legend_labels = ['Housekeeping', 'Resting potential\n(reversal of Na\u207A)', 'Action potential\n(reversal of Na\u207A)', 'Synaptic transmission\n(glutamate recycling)', 'Synaptic transmission\n(reversal of presyn Ca\u00B2\u207A)', 'Synaptic transmission\n(reversal of Na\u207A)']
     
     # panel A: CTR stackplot
     pf.plot_energy_stackplot(np.asarray(E_tot_CTR)/1e9, np.asarray(E_HK_CTR)/1e9, np.asarray(E_RP_CTR)/1e9, np.asarray(E_AP_CTR)/1e9, np.asarray(E_ST_CTR)/1e9, np.asarray(E_glu_CTR)/1e9, np.asarray(E_Ca_CTR)/1e9, np.asarray(r_post_fit), description_CTR, legend_labels, r_post_optimum, r_post_optimum_percentages=True, inverted=False, legend_pos=False, y_limit=y_limit, y_label=y_label, color_r_post_optimum=color_CTR, ax=axA)
@@ -1183,8 +1183,8 @@ def fig_Pareto_optimality_Zeldenrust(results_analysis_exc, results_analysis_inh,
         plt.savefig(savepath.replace('.pdf', '.png'), dpi=600, bbox_inches='tight', transparent=True)
         plt.savefig(savepath.replace('.pdf', '.tiff'), dpi=600, bbox_inches='tight', transparent=False, pil_kwargs={"compression": "tiff_lzw"})
         
-    print('norm. const. $E_{\mathrm{tot}}$ grid exc: ' + str(round(x_min_grid_inh,4)) + ' $10^{9}$ ATP/s')
-    print('norm. const. $MI$ grid exc: ' + str(round(y_max_grid_inh,4)) + ' bits')
+    print('norm. const. $E_{\mathrm{tot}}$ grid exc: ' + str(round(x_min_grid_exc,4)) + ' $10^{9}$ ATP/s')
+    print('norm. const. $MI$ grid exc: ' + str(round(y_max_grid_exc,4)) + ' bits')
     print('norm. const. $MI$ per energy grid exc: ' + str(round(z_max_grid_exc,4)) + ' bits/($10^{9}$ ATP/s)') 
     
     print('norm. const. $E_{\mathrm{tot}}$ exp exc: ' + str(round(x_min_exp_exc,4)) + ' $10^{9}$ ATP/s')
@@ -1217,7 +1217,7 @@ def fig_V_gap(results_multiple_CTR_FR_runs_V_gap_AdExp, results_V_gap_variable_E
     # 3 rows x 5 columns; keep last column mostly unused to allow a clean 2-col span for OSI
     gs = GridSpec(3, 2, figure=fig, width_ratios=[1,1], height_ratios=[0.8,1,1], wspace=0.2, hspace=0.2)
     
-    # create spiek shape for illustrative figures
+    # create spike shape for illustrative figures
     t_plot, V_plot = pf.illustrative_spike()
 
     # A: 
@@ -1555,7 +1555,7 @@ def fig_nonlinearscaling_tuning_curve_broadening(mEPSC_avg_norm_CTR, mEPSC_avg_n
 
     # panel A
     axA = fig.add_subplot(gs[0,0:2])
-    pf.plot_mEPSC_lognormal_fit(mEPSC_avg_norm_CTR, mEPSC_avg_norm_FR, lognormal_function=pf.lognormal, label_mode="short", scale_factor=1.845, bins=500, color_CTR=color_CTR, color_FR=color_FR_non_mult_scale, color_scaled=color_FR, title=None, ax=axA) # swap colors for consistency --> multiplicative scaling should be red
+    pf.plot_mEPSC_lognormal_fit(mEPSC_avg_norm_CTR, mEPSC_avg_norm_FR, lognormal_function=lognormal_function, label_mode="short", scale_factor=1.845, bins=500, color_CTR=color_CTR, color_FR=color_FR_non_mult_scale, color_scaled=color_FR, title=None, ax=axA) # swap colors for consistency --> multiplicative scaling should be red
     panel_letter(axA, "A", size=fontsizes['panelletterfontsize'])
 
     # panels B–D
@@ -1633,12 +1633,12 @@ def fig_membrane_noise_tuning_curve_broadening(results_membrane_noise_CTR, resul
     axB.set_title('$OSI$ and FWHM for different membrane noise levels')
     panel_letter(axB, "B", size=fontsizes['panelletterfontsize'], dx=-0.07, dy=0.02)
 
-    # panel V (sigma = 8)
+    # panel V (sigma = 4)
     axC = fig.add_subplot(gs[0,3])
-    noise_index_8 = 5
-    tcs_CTR_8 = [np.array(tc[noise_index_8]) for tc in results_membrane_noise_CTR['tuning_curve']]
-    tcs_FR_8  = [np.array(tc[noise_index_8]) for tc in results_membrane_noise_FR['tuning_curve']]
-    pf.plot_tuning_curves(tcs_CTR_8, tcs_FR_8, 'CTR', 'FR', normalized=True, color_CTR=color_CTR, color_FR=color_FR, half_width_max=True, minmax_mode=False, show_legend=False, ax=axC)
+    noise_index_4 = 5
+    tcs_CTR_4 = [np.array(tc[noise_index_4]) for tc in results_membrane_noise_CTR['tuning_curve']]
+    tcs_FR_4  = [np.array(tc[noise_index_4]) for tc in results_membrane_noise_FR['tuning_curve']]
+    pf.plot_tuning_curves(tcs_CTR_4, tcs_FR_4, 'CTR', 'FR', normalized=True, color_CTR=color_CTR, color_FR=color_FR, half_width_max=True, minmax_mode=False, show_legend=False, ax=axC)
     axC.set_title(r'$\sigma=4$ mV/ms')
     axC.set_ylabel('')
     axC.set_xlabel('Distance from \n Pref. Orientation ($\circ$)')
@@ -2107,7 +2107,7 @@ def fig_synapse_vs_excitability_first(time_FR_PD=None, time_FR_PD_reverse=None, 
 
     # B
     #pf.plot_energy_vs_OSI_two_FR_trajectories(results_mean_FR_trajectory_synapse_first, results_mean_FR_trajectory_excitability_first, colors=colors, labels=labels, markers=markers, show_legend=False, ax=axB)
-    pf.plot_OSI_per_energy_two_FR_trajectories(results_mean_FR_trajectory_synapse_first, results_mean_FR_trajectory_excitability_first, results_FR_synapse_first, results_FR_excitability_first, OSI_per_energy="OSI_per_energy", colors=colors, labels=labels, markers=("o", "D"), show_legend=False, ax=axB) # , s=42, linewidth=1.4
+    pf.plot_OSI_per_energy_two_FR_trajectories(results_mean_FR_trajectory_synapse_first, results_mean_FR_trajectory_excitability_first, results_FR_synapse_first, results_FR_excitability_first, OSI_per_energy="OSI_per_energy", colors=colors, labels=labels, markers=markers, show_legend=False, ax=axB) # , s=42, linewidth=1.4
     panel_letter(axB, "B", size=fontsizes["panelletterfontsize"])
     
     # C
@@ -2237,7 +2237,7 @@ def fig_energy_budget_minmax_bars(E_CTR, E_FR, E_CTR_minmax, E_FR_minmax, r_post
 
     # use same component order and colors as energy-budget figure
     component_indices = [1, 2, 3, 5, 6, 4]
-    component_labels = ['House keeping', 'Resting potential\n(reversal of Na\u207A)', 'Action potential\n(reversal of Na\u207A)', 'Synaptic transmission\n(glutamate recycling)', 'Synaptic transmission\n(reversal of presyn Ca\u00B2\u207A)', 'Synaptic transmission\n(reversal of Na\u207A)']
+    component_labels = ['Housekeeping', 'Resting potential\n(reversal of Na\u207A)', 'Action potential\n(reversal of Na\u207A)', 'Synaptic transmission\n(glutamate recycling)', 'Synaptic transmission\n(reversal of presyn Ca\u00B2\u207A)', 'Synaptic transmission\n(reversal of Na\u207A)']
     component_colors = ['#808080', '#285F8B', '#D91A8F', '#017376', '#018F9B', '#018F76']
 
     # determine common y-axis limit from maximal budgets

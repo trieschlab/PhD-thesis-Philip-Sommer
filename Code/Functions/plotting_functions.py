@@ -5837,7 +5837,7 @@ def E_RP(V_RP, R_m, V_K, V_Na, V_h, e, alpha=0.05):
     # output
     # E_RP is the resting potential energy consumption
     
-    E_RP = (g_Na(V_RP, R_m, V_K, V_Na, V_h, alpha=0.05) * (V_Na - V_RP) / 3 + g_h(V_RP, R_m, V_K, V_Na, V_h, alpha=0.05) * (V_h - V_RP) / 4) / e
+    E_RP = (g_Na(V_RP, R_m, V_K, V_Na, V_h, alpha=alpha) * (V_Na - V_RP) / 3 + g_h(V_RP, R_m, V_K, V_Na, V_h, alpha=alpha) * (V_h - V_RP) / 4) / e
     return E_RP
     
 def plot_conductances(R_m, alpha, V_K, V_Na, V_h, colors=['#57e7ff', '#9357ff', '#ff1d1d'], figsize=(8, 5), ax=None, savename=None):

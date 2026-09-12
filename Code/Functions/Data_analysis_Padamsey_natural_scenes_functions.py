@@ -297,7 +297,7 @@ def run_movie_current_clamp_analysis(filename, duration_s=42, prominence=42, dis
     # metrics_to_compare is a list of cell-level metrics used for group statistics
     
     # output
-    # results is a dictionary containing raw data, traces, metadata, time vectors, metrics, summaries, and statistics
+    # df_cell is a dictionary containing raw data, traces, metadata, time vectors, metrics, summaries, and statistics
     
     if condition_map is None:
         condition_map = {1: "CTR", 2: "FR"}
